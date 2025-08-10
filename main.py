@@ -11,13 +11,13 @@ def get_weather_data(city):
     response = requests.get(url)
 
     if response.status_code == 404:
-        Messagebox.showerror("Error", "City not found")
+        Messagebox.show_error("City not found", "Error")
         return None
     elif response.status_code == 401:
-        Messagebox.showerror("Error", "Invalid API key")
+        Messagebox.show_error("Invalid API key", "Error")
         return None
     elif response.status_code == 500:
-        Messagebox.showerror("Error", "Server error")
+        Messagebox.show_error("Server error", "Error")
         return None
     else:
         weather = response.json()
