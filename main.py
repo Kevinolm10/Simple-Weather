@@ -1,7 +1,7 @@
 import requests
 import json
 import tkinter as tk
-import ttkbootstrap
+import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
 
 API_KEY = "319411e71d70d6546b85d548e53e4c7c"
@@ -30,9 +30,9 @@ def get_weather_data(city):
         return (icon_url, temperature, description, city_name, country)
 
 def update_weather_display(icon_url, temperature, description, city_name, country):
-    location_label.config(text=f"Location: {city_name}, {country}")
-    temperature_label.config(text=f"Temperature: {temperature}°C")
-    description_label.config(text=f"Description: {description}")
+    location_label.config(text=f"{city_name}, {country}")
+    temperature_label.config(text=f"{temperature}°C")
+    description_label.config(text=description.title())
 
     icon_data = requests.get(icon_url).content
     icon_image = tk.PhotoImage(data=icon_data)
@@ -41,36 +41,59 @@ def update_weather_display(icon_url, temperature, description, city_name, countr
 
 def search():
     city = city_entry.get()
-    result = get_weather_data(city)
-    if result:
-        update_weather_display(*result)
+    if city.strip():
+        result = get_weather_data(city)
+        if result:
+            update_weather_display(*result)
 
-# Root windows settings
-root = tk.Tk()
-root.title = "Weather App"
-root.geometry("600x400")
-root.configure(bg='blue')
+# Root window with modern theme
+root = ttk.Window(themename="superhero")
+root.title("Weather App")
+root.geometry("500x600")
+root.resizable(False, False)
 
-frame = tk.Frame(root, bg='white', bd=2, relief='groove', padx=20, pady=20)
-frame.pack(padx=30, pady=30)
+# Main container
+main_frame = ttk.Frame(root, padding=30)
+main_frame.pack(fill="both", expand=True)
 
-city_entry = ttkbootstrap.Entry(frame, width=30, font=("Arial", 12))
-city_entry.pack(pady=10)
+# Title
+title_label = ttk.Label(main_frame, text="Weather App", font=("Arial", 24, "bold"))
+title_label.pack(pady=(0, 30))
 
-search_button = ttkbootstrap.Button(frame, text="Search", bootstyle="primary", command=search)
-search_button.pack(pady=10)
+# Search section
+search_frame = ttk.Frame(main_frame)
+search_frame.pack(fill="x", pady=(0, 30))
 
-icon_label = tk.Label(frame)
-icon_label.pack(pady=5)
+city_entry = ttk.Entry(search_frame, font=("Arial", 14), width=25)
+city_entry.pack(side="left", padx=(0, 10), fill="x", expand=True)
 
-location_label = ttkbootstrap.Label(root, font=("Arial", 14))
-location_label.pack(pady=10)
+search_button = ttk.Button(search_frame, text="Search", bootstyle="primary", command=search)
+search_button.pack(side="right")
 
-temperature_label = ttkbootstrap.Label(root, font=("Arial", 12))
-temperature_label.pack(pady=5)
+# Weather display card
+weather_card = ttk.Frame(main_frame, padding=20, relief="solid", borderwidth=1)
+weather_card.pack(fill="x", pady=(0, 20))
 
-description_label = ttkbootstrap.Label(root, font=("Arial", 12))
-description_label.pack(pady=5)
+# Icon and location
+header_frame = ttk.Frame(weather_card)
+header_frame.pack(fill="x", pady=(0, 15))
+
+icon_label = ttk.Label(header_frame)
+icon_label.pack(side="left", padx=(0, 15))
+
+location_label = ttk.Label(header_frame, font=("Arial", 18, "bold"))
+location_label.pack(side="left", anchor="w")
+
+# Temperature
+temperature_label = ttk.Label(weather_card, font=("Arial", 36, "bold"), bootstyle="primary")
+temperature_label.pack(pady=(0, 10))
+
+# Description
+description_label = ttk.Label(weather_card, font=("Arial", 14))
+description_label.pack()
+
+# Bind Enter key to search
+city_entry.bind("<Return>", lambda e: search())
 
 # Load initial data for Stockholm
 result = get_weather_data("Stockholm")
