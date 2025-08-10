@@ -1,0 +1,12 @@
+# Weather App Dependencies
+# Install with: pip install -r requirements.txt
+
+# HTTP requests library for API calls
+requests>=2.32.0
+
+# Modern themes and styling for tkinter GUI
+ttkbootstrap>=1.10.0
+
+# Built-in libraries (no installation needed):
+# - tkinter (GUI framework)
+# - json (JSON data handling)
